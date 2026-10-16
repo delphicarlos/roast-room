@@ -6,8 +6,10 @@ Install from a local checkout using Python 3 and Git:
 python3 scripts/install_codex.py
 ```
 
-The default destination is `$CODEX_HOME/skills/roast-room`, or
-`~/.codex/skills/roast-room` when `CODEX_HOME` is unset. To use a different location:
+The default destination is `~/.agents/skills/roast-room`, the user skill directory
+in the [official Codex documentation](https://learn.chatgpt.com/docs/build-skills).
+`CODEX_HOME` configures Codex state; it does not change this user discovery path.
+To use a different location:
 
 ```sh
 python3 scripts/install_codex.py --dest /path/to/skills/roast-room
@@ -20,7 +22,8 @@ the source commit and file inventory. It does not modify the Claude Code skill,
 global instructions, permissions, credentials, or shell configuration. It installs
 no npm packages and starts no services.
 
-The skill is available on the next Codex turn. Invoke it explicitly:
+Codex detects skill changes automatically. If it does not appear, restart Codex
+when convenient. Invoke it explicitly:
 
 ```text
 $roast-room ask hormozi How should a fictional service business test a price increase?
@@ -59,6 +62,12 @@ Run the packaging tests offline, without installing dependencies:
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
 ```
 
-Tests install into temporary directories, check resource paths and overwrite
+Tests install into temporary directories, check the default discovery directory,
+explicit destinations, resource paths and overwrite
 protection, and run the quote checker on a fabricated quote from an unrelated
 working directory. They do not evaluate model reasoning or run the web app.
+
+For a previous installation under `~/.codex/skills/roast-room`, preserve that
+directory and add a symlink at `~/.agents/skills/roast-room` pointing to it if the
+latter path does not exist. Codex supports symlinked skill folders. The installer
+does not create this link or relocate existing installations automatically.

@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 REPO = Path(__file__).resolve().parents[1]
@@ -60,16 +61,23 @@ class CodexInstallTests(unittest.TestCase):
                 installer.install(skill)
             self.assertEqual(sentinel.read_text(), "Existing user content\n")
 
-    def test_cli_honors_codex_home(self):
+    def test_default_uses_user_discovery_directory(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            with patch.object(Path, "home", return_value=Path(temporary)):
+                self.assertEqual(installer.default_destination(),
+                                 Path(temporary) / ".agents/skills/roast-room")
+
+    def test_cli_honors_explicit_destination(self):
         import os
         with tempfile.TemporaryDirectory() as temporary:
-            env = dict(os.environ, CODEX_HOME=temporary, PYTHONDONTWRITEBYTECODE="1")
+            env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
+            destination = Path(temporary) / "custom-skill"
             result = subprocess.run(
-                [sys.executable, str(REPO / "scripts/install_codex.py")],
+                [sys.executable, str(REPO / "scripts/install_codex.py"), "--dest", str(destination)],
                 env=env, capture_output=True, text=True,
             )
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertTrue((Path(temporary) / "skills/roast-room/SKILL.md").is_file())
+            self.assertTrue((destination / "SKILL.md").is_file())
 
 
 if __name__ == "__main__":

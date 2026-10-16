@@ -3,7 +3,6 @@
 
 import argparse
 import json
-import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -102,10 +101,13 @@ def install(destination):
     return destination
 
 
+def default_destination():
+    return Path.home() / ".agents" / "skills" / "roast-room"
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    default_home = Path(os.environ.get("CODEX_HOME") or Path.home() / ".codex")
-    parser.add_argument("--dest", type=Path, default=default_home / "skills" / "roast-room",
+    parser.add_argument("--dest", type=Path, default=default_destination(),
                         help="Exact skill directory; must not already exist")
     args = parser.parse_args()
     try:
