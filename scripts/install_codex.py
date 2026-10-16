@@ -58,6 +58,7 @@ def install(destination):
             "directory, or supply the brief and prior cards directly when using chat only. "
             "Seat agents only read resources and return cards.\n\n"
         ) + text[end:]
+        text = text.replace("then at most four more brain files", "then at most three more brain files")
         prompts.write_text(text, encoding="utf-8")
 
         seats = destination / "references" / "seats.md"

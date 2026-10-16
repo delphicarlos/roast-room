@@ -36,6 +36,7 @@ class CodexInstallTests(unittest.TestCase):
             self.assertNotIn("subagent_type", (skill / "SKILL.md").read_text())
             self.assertNotIn(".claude/", (skill / "references/seats.md").read_text())
             self.assertIn("user's language", (skill / "references/report-template.md").read_text())
+            self.assertNotIn("at most four more", (skill / "references/round-prompts.md").read_text())
 
             session = root / "fictional-session"
             session.mkdir()
